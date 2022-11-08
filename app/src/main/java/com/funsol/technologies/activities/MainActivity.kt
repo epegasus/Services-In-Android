@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     val mViewModel: MainActivityViewModel by viewModels()
     private lateinit var mainApplication: MainApplication
 
+    var isChecked = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,7 +32,15 @@ class MainActivity : AppCompatActivity() {
         listener()
     }
 
-    private fun listener() { binding.toggleUpdates.setOnClickListener { toggleUpdates() } }
+    private fun listener() {
+        binding.toggleUpdates.setOnClickListener {
+            toggleUpdates()
+
+            isChecked = !isChecked
+
+            mainApplication.showNotification(isChecked)
+        }
+    }
 
     private fun setObservers() {
         mViewModel.binder.observe(this) { myBinder ->
@@ -82,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     private fun toggleUpdates() {
         println("ServiceValue: is $mService")
         if (mService != null) {
-            if (mService?.progress === mService?.maxValue) {
+            if (mService?.progress == mService?.maxValue) {
                 mService!!.resetTask()
                 binding.toggleUpdates.text = getString(R.string.start)
             } else {

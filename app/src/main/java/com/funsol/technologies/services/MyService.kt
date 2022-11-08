@@ -45,11 +45,9 @@ class MyService : Service() {
         }
 
         @RequiresApi(api = 26)
-        fun createNotificationChannel(
-            context: Context,
-            id: String, name: String, importance: Int,
-            description: String
-        ) {
+        fun createNotificationChannel(context: Context,
+                                      id: String, name: String, importance: Int,
+                                      description: String) {
             val channel = NotificationChannel(id, name, importance)
             channel.description = description
             createNotificationChannel(context, channel)
@@ -57,9 +55,8 @@ class MyService : Service() {
 
         @Suppress("MemberVisibilityCanBePrivate")
         @RequiresApi(api = 26)
-        fun createNotificationChannel(
-            context: Context,
-            channel: NotificationChannel
+        fun createNotificationChannel(context: Context,
+                                      channel: NotificationChannel
         ) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
@@ -106,6 +103,7 @@ class MyService : Service() {
             Log.d(TAG, "-onStartCommand(...)")
         }
     }
+
 
 
     private fun initValues() {

@@ -28,7 +28,6 @@ class MainApplication : Application() {
     }
 
     private lateinit var notification: Notification
-
     var isNotificationShowing: Boolean = false
         private set
 
@@ -44,20 +43,37 @@ class MainApplication : Application() {
             val channelDescription = "$appName channel description"
 
             MyService.createNotificationChannel(
-                this, NOTIFICATION_CHANNEL_ID, channelName, channelImportance, channelDescription
+                this, NOTIFICATION_CHANNEL_ID,
+                channelName,
+                channelImportance,
+                channelDescription
             )
         }
-        notification = createOngoingNotification(NOTIFICATION_REQUEST_CODE, R.drawable.ic_notification, "Content Text")
+
+        notification = createOngoingNotification(
+            NOTIFICATION_REQUEST_CODE,
+            R.drawable.ic_notification,
+            "Content Text")
 
         Log.d(TAG, "-onCreate()")
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun createOngoingNotification(requestCode: Int, icon: Int, text: String): Notification {
 
         val context: Context = this
 
-        val contentIntent = Intent(context, MainActivity::class.java).setAction(Intent.ACTION_MAIN).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        val contentPendingIntent = PendingIntent.getActivity(context, requestCode, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val contentIntent = Intent(context, MainActivity::class.java)
+            .setAction(Intent.ACTION_MAIN).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        val contentPendingIntent = PendingIntent.getActivity(
+            context,
+            requestCode,
+            contentIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                PendingIntent.FLAG_IMMUTABLE
+            else 0
+        )
 
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).setOngoing(true).setSmallIcon(icon).setContentTitle(getString(R.string.app_name)).setContentText(text).setContentIntent(contentPendingIntent).build()
     }
