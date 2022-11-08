@@ -9,6 +9,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.funsol.technologie.R
 import com.funsol.technologie.databinding.ActivityMainBinding
+import com.funsol.technologies.MainApplication
+import com.funsol.technologies.MainApplication.Companion.getMainApplication
 import com.funsol.technologies.services.MyService
 import com.funsol.technologies.viewModel.MainActivityViewModel
 
@@ -17,10 +19,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var mService: MyService? = null
     val mViewModel: MainActivityViewModel by viewModels()
+    private lateinit var mainApplication: MainApplication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        mainApplication = getMainApplication(this)
         setContentView(binding.root)
         setObservers()
         listener()
@@ -66,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 binding.toggleUpdates.text = getString(R.string.pause)
                 handler.postDelayed(runnable, 100)
             } else {
-                if (mService?.progress === mService?.maxValue) {
+                if (mService?.progress == mService?.maxValue) {
                     binding.toggleUpdates.text = getString(R.string.restart)
                 } else {
                     binding.toggleUpdates.text = getString(R.string.start)
