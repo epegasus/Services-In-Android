@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name="com.funsol.technologies.MainApplication"
+        android:name="com.funsol.technologies.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -31,6 +31,10 @@
         </activity>
 
         <service android:name="com.funsol.technologies.services.MyService"/>
+        <service
+            android:name="com.funsol.technologies.services.MainService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -9,8 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.funsol.technologie.R
 import com.funsol.technologie.databinding.ActivityMainBinding
-import com.funsol.technologies.MainApplication
-import com.funsol.technologies.MainApplication.Companion.getMainApplication
+import com.funsol.technologies.App.Companion.getContext
 import com.funsol.technologies.services.MyService
 import com.funsol.technologies.viewModel.MainActivityViewModel
 
@@ -19,14 +18,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var mService: MyService? = null
     val mViewModel: MainActivityViewModel by viewModels()
-    private lateinit var mainApplication: MainApplication
 
-    var isChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        mainApplication = getMainApplication(this)
         setContentView(binding.root)
         setObservers()
         listener()
@@ -35,10 +31,6 @@ class MainActivity : AppCompatActivity() {
     private fun listener() {
         binding.toggleUpdates.setOnClickListener {
             toggleUpdates()
-
-            isChecked = !isChecked
-
-            mainApplication.showNotification(isChecked)
         }
     }
 
@@ -94,14 +86,19 @@ class MainActivity : AppCompatActivity() {
         if (mService != null) {
             if (mService?.progress == mService?.maxValue) {
                 mService!!.resetTask()
+                getContext().showNotification(false)
                 binding.toggleUpdates.text = getString(R.string.start)
             } else {
                 if (mService?.isPaused == true) {
                     mService!!.unPausePretendLongRunningTask()
                     mViewModel.setIsProgressBarUpdating(true)
+                    getContext().showNotification(true)
+
                 } else {
                     mService!!.pausePretendLongRunningTask()
                     mViewModel.setIsProgressBarUpdating(false)
+                    getContext().showNotification(false)
+
                 }
             }
         }
